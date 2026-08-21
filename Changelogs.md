@@ -5,7 +5,7 @@ This project follows **Semantic Versioning** (`MAJOR.MINOR.PATCH`).
 
 ---
 
-### v2.0.0! 🥳
+## v2.0.0! 🥳
 Fully rewritten, from the ground up, following the structure of my other modules.
 No new syntax, everything will work just as before.
 
