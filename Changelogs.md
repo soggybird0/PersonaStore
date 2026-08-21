@@ -5,13 +5,13 @@ This project follows **Semantic Versioning** (`MAJOR.MINOR.PATCH`).
 
 ---
 
-## v2.0.0! 🥳
+# v2.0.0! 🥳
 Fully rewritten, from the ground up, following the structure of my other modules.
 No new syntax, everything will work just as before.
 
-# v1.4.0
+## v1.4.0
 
-## Added
+### Added
 *Serialization Engine & BufferArray utility*  
 *Automatic Rate Limiting for Datastore Requests*  
 
@@ -69,7 +69,7 @@ scores:Set(0, 4200)
 
 ---
 
-# v1.2.0
+## v1.2.0
 
 ## Added
 *OrderedDataStore, MemoryStore, Version APIs, and configurable integrity hashing*
@@ -482,7 +482,7 @@ If you were previously relying on `VerifyDataIntegrity()` returning `false` in n
 
 ---
 
-# v1.1.0
+## v1.1.0
 
 ## Added
 *EncodingService Integration & Advanced Features*
