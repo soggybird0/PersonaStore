@@ -257,7 +257,7 @@ so developers can spend more time building games rather than persistence infrast
 ---
 
 **Author:** @Draxxor   
-**Version:** 1.4.0   
+**Version:** 2.0.0   
 **License:** MIT   
 
 Made for developers by a developer. ❤
