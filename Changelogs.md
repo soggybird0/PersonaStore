@@ -18,10 +18,10 @@ No new syntax, everything will work just as before.
 ### Serialization Engine
 - New global serializer registry, pre-populated with built-in support for `Vector3`, `Vector2`, `CFrame`, `Color3`, `UDim`, and `UDim2`.
 - `PersonaStore:RegisterSerializer(typeName, serializer)` to register custom (de)serializers for your own types (e.g. a `Currency` or `Item` struct), where `serializer` is a table of `{Serialize = function(value) -> storageSafeData, Deserialize = function(data) -> value}`.
-- New `SerializationManifest` config option on `Founder.new()` / `PersonaStore:CreateDataStore()` — a `{fieldName = typeName, ...}` table applied automatically to every session loaded from that store.
-- `DataSession:SetSerialize(manifest)` — replaces the session's manifest wholesale. Sessions inherit a deep copy of the store's `SerializationManifest` by default, so calling this only affects that one session.
-- `DataSession:MarkFieldSerialized(fieldName, typeName)` — adds or overrides a single field's manifest entry without replacing the rest of the manifest.
-- `DataSession:Serialize(value, typeName?)` / `DataSession:Deserialize(value)` — manual (de)serialization helpers for one-off conversions outside the manifest. `Serialize()` auto-detects known Roblox types via `typeof()` when `typeName` is omitted, and recurses into plain tables so nested typed values (e.g. an array of `CFrame`s) are converted too.
+- New `SerializationManifest` config option on `Founder.new()` / `PersonaStore:CreateDataStore()` - a `{fieldName = typeName, ...}` table applied automatically to every session loaded from that store.
+- `DataSession:SetSerialize(manifest)` - replaces the session's manifest wholesale. Sessions inherit a deep copy of the store's `SerializationManifest` by default, so calling this only affects that one session.
+- `DataSession:MarkFieldSerialized(fieldName, typeName)` - adds or overrides a single field's manifest entry without replacing the rest of the manifest.
+- `DataSession:Serialize(value, typeName?)` / `DataSession:Deserialize(value)` - manual (de)serialization helpers for one-off conversions outside the manifest. `Serialize()` auto-detects known Roblox types via `typeof()` when `typeName` is omitted, and recurses into plain tables so nested typed values (e.g. an array of `CFrame`s) are converted too.
 - Manifest-marked fields are automatically converted to storage-safe form immediately before `Save()`, `SavePatch()`, `SaveCompressed()`, and `ExportData()` write/hash their data, and converted back immediately after `LoadSession()`, `LoadReadOnlySnapshot()`, `GetVersionAsync()`, and `ImportData()` read theirs.
 - `PersonaStore.SerializeValue` / `PersonaStore.DeserializeValue` exposed on the module table for use without a live session, e.g. `PersonaStore.SerializeValue(myVector, "Vector3")`.
 
@@ -39,12 +39,12 @@ No new syntax, everything will work just as before.
 - N/A
 
 ## Fixed
-- **`BufferArray:Get()` / `:Set()` indexed the buffer as if it were a table.** The original implementation attempted `self._buffer[self._readMethod](...)`, but a Luau `buffer` isn't indexable or callable that way — the reader/writer functions (`buffer.readu8`, `buffer.writeu8`, etc.) live on the global `buffer` library, not on the buffer value itself. Fixed to call through the `buffer` library directly, e.g. `buffer.readu8(self._buffer, offset)`.
+- **`BufferArray:Get()` / `:Set()` indexed the buffer as if it were a table.** The original implementation attempted `self._buffer[self._readMethod](...)`, but a Luau `buffer` isn't indexable or callable that way - the reader/writer functions (`buffer.readu8`, `buffer.writeu8`, etc.) live on the global `buffer` library, not on the buffer value itself. Fixed to call through the `buffer` library directly, e.g. `buffer.readu8(self._buffer, offset)`.
 
 ---
 
 ### Migration Notes for v1.2.0 → v1.3.0
-**100% Backward Compatible** — no breaking changes. `SerializationManifest` defaults to `{}` and `BufferArray` is purely additive; every existing store/session behaves exactly as before unless you opt in:
+**100% Backward Compatible** - no breaking changes. `SerializationManifest` defaults to `{}` and `BufferArray` is purely additive; every existing store/session behaves exactly as before unless you opt in:
 
 ```lua
 -- v1.2.0 code continues to work exactly as before
@@ -79,24 +79,24 @@ scores:Set(0, 4200)
 ## Changed
 - `withRetry()` no longer sleeps with exponential backoff after its *final* failed attempt (it used to wait needlessly before returning failure).
 - Profile schema (`profileRaw`) now includes a `FieldHashes` table alongside the existing `DataHash`.
-- `Founder:BatchUpdate()` no longer calls `SavePatch()` immediately before `Destroy()` — `Destroy()` already performs a full `Save()`, so every batched key was previously being written to the DataStore twice.
+- `Founder:BatchUpdate()` no longer calls `SavePatch()` immediately before `Destroy()` - `Destroy()` already performs a full `Save()`, so every batched key was previously being written to the DataStore twice.
 
 ---
 
 ## Fixed
 - **Require guard threw the wrong error / retried needlessly.** The server-only guard was calling `withRetry(task.spawn(function() ... end))`, which passes a *thread* into `withRetry`. `withRetry` does `pcall(thread)` internally, and a thread isn't callable, so every one of its 5 attempts failed immediately (burning through exponential backoff) before finally surfacing an unrelated pcall error instead of the intended "server only" message. Fixed to call `withRetry` with an actual function and `maxAttempts = 1`.
 - **Decompression could use the wrong algorithm.** `CompressionHandler.decompress()` / `getDecompressedSize()` always decompressed using the *current global* `PersonaStore.CompressionAlgorithm` rather than whichever algorithm a given profile was actually compressed with. Calling `SetCompressionSettings()` to change the global algorithm made every previously-compressed profile fail to decompress correctly. Fixed by recording the algorithm's serialized name in `CompressionMetadata.Algorithm` at compress time and resolving it back to the correct `Enum.CompressionAlgorithm` at read time (`LoadSession`, `LoadReadOnlySnapshot`, and the new `GetVersionAsync` all go through this now).
-- **`VerifyDataIntegrity()` almost always returned `false`.** It hashed the live observable proxy (`self.Data`) directly via `HttpService:JSONEncode`, but every `Save()` path hashes `deepCopy(self.Data)` — a plain table. `JSONEncode` doesn't respect the proxy's `__iter` metamethod, so the two hashes were computed over different representations and essentially never matched. Fixed to `deepCopy` before hashing, consistent with the save paths.
+- **`VerifyDataIntegrity()` almost always returned `false`.** It hashed the live observable proxy (`self.Data`) directly via `HttpService:JSONEncode`, but every `Save()` path hashes `deepCopy(self.Data)` - a plain table. `JSONEncode` doesn't respect the proxy's `__iter` metamethod, so the two hashes were computed over different representations and essentially never matched. Fixed to `deepCopy` before hashing, consistent with the save paths.
 - **`BatchUpdate()` wrote every key twice.** See "Changed" above.
-- **Every save that computed an integrity hash failed with `CantStoreValue`.** `CompressionHandler.hashData()` returned the raw digest from `EncodingService:ComputeStringHash()` as-is, and stored it directly in `DataHash`/`FieldHashes`. Hash digests are effectively random bytes, not guaranteed valid UTF-8, and Roblox DataStores reject any string that isn't valid UTF-8 — so `Save()`/`SavePatch()` would fail on `UpdateAsync` every single time `PersonaStore.EnableDataIntegrityChecks` was on (the default). Fixed by base64-encoding the digest before it's stored or compared, the same approach already used for compressed buffer data.
+- **Every save that computed an integrity hash failed with `CantStoreValue`.** `CompressionHandler.hashData()` returned the raw digest from `EncodingService:ComputeStringHash()` as-is, and stored it directly in `DataHash`/`FieldHashes`. Hash digests are effectively random bytes, not guaranteed valid UTF-8, and Roblox DataStores reject any string that isn't valid UTF-8 - so `Save()`/`SavePatch()` would fail on `UpdateAsync` every single time `PersonaStore.EnableDataIntegrityChecks` was on (the default). Fixed by base64-encoding the digest before it's stored or compared, the same approach already used for compressed buffer data.
 
 ---
 
 ### Configurable Integrity Hashing
 - New `PersonaStore.IntegrityMode` setting with three modes:
-  - `"Full"` *(default, back-compat)* — rehashes the entire profile on every `SavePatch()`, same as v1.1.x.
-  - `"HashOnlyOnFullSave"` — `SavePatch()` skips hashing entirely; `DataHash` only refreshes the next time `Save()` runs.
-  - `"PerField"` — `SavePatch()` only rehashes the fields that were actually dirtied, tracked in a new `FieldHashes` table. A profile with a 50,000-item `Inventory` no longer pays to rehash it just because `Coins` changed.
+  - `"Full"` *(default, back-compat)* - rehashes the entire profile on every `SavePatch()`, same as v1.1.x.
+  - `"HashOnlyOnFullSave"` - `SavePatch()` skips hashing entirely; `DataHash` only refreshes the next time `Save()` runs.
+  - `"PerField"` - `SavePatch()` only rehashes the fields that were actually dirtied, tracked in a new `FieldHashes` table. A profile with a 50,000-item `Inventory` no longer pays to rehash it just because `Coins` changed.
 - `PersonaStore:SetIntegrityMode(mode)` to switch modes at runtime.
 - `DataSession:VerifyDataIntegrity()` is now integrity-mode-aware, checking `FieldHashes` in `"PerField"` mode instead of the whole-profile hash.
 - `Founder:GetKeyMetadata()` now also returns `FieldHashes`.
@@ -123,9 +123,9 @@ scores:Set(0, 4200)
 ---
 
 ### DataStore Version APIs
-- `Founder:ListVersionsAsync(key, sortDirection, minDate, maxDate, pageSize)` — returns the native `DataStoreVersionPages` object.
-- `Founder:GetVersionAsync(key, version)` — returns a deep copy of a historical version, automatically decompressed if that version was stored compressed.
-- `Founder:RemoveVersionAsync(key, version)` — permanently deletes a historical version.
+- `Founder:ListVersionsAsync(key, sortDirection, minDate, maxDate, pageSize)` - returns the native `DataStoreVersionPages` object.
+- `Founder:GetVersionAsync(key, version)` - returns a deep copy of a historical version, automatically decompressed if that version was stored compressed.
+- `Founder:RemoveVersionAsync(key, version)` - permanently deletes a historical version.
 
 ---
 
@@ -463,7 +463,7 @@ print(("\n=== Results: %d Passed, %d Failed ==="):format(results.Passed, results
 ---
 
 ### Migration Notes for v1.1.0 → v1.2.0
-**100% Backward Compatible** — no breaking changes. `PersonaStore.IntegrityMode` defaults to `"Full"`, the same hashing behavior as v1.1.x, so nothing changes unless you opt in:
+**100% Backward Compatible** - no breaking changes. `PersonaStore.IntegrityMode` defaults to `"Full"`, the same hashing behavior as v1.1.x, so nothing changes unless you opt in:
 
 ```lua
 -- v1.1.0 code continues to work exactly as before
@@ -478,7 +478,7 @@ local Queue = PersonaStore:CreateMemoryQueue("PurchaseQueue")
 local versions = PlayerStore:ListVersionsAsync(tostring(userId))
 ```
 
-If you were previously relying on `VerifyDataIntegrity()` returning `false` in normal operation (i.e. code paths that treated "always fails" as expected), double check those paths — it now correctly returns `true` when data hasn't been tampered with.
+If you were previously relying on `VerifyDataIntegrity()` returning `false` in normal operation (i.e. code paths that treated "always fails" as expected), double check those paths - it now correctly returns `true` when data hasn't been tampered with.
 
 ---
 
