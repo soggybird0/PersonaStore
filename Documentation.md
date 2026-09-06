@@ -235,7 +235,7 @@ end
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-|  | `string / number` | Yes | Profile key (usually player UserID) |
+|  key | `string / number` | Yes | Profile key (usually player UserID) |
 
 **Returns:** `DataSession?` — `nil` if ownership could not be acquired
 
@@ -251,7 +251,7 @@ local session = Store:LoadSessionAsync(tostring(player.UserId), 8)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-|  | `string / number` | Yes | Profile key |
+|  key | `string / number` | Yes | Profile key |
 | `maxWaitSeconds` | `number` | No | Timeout in seconds (default: 10) |
 
 **Best for:** Player rejoin after crashes, where waiting 5-10 seconds is preferable to kicking.
@@ -272,7 +272,7 @@ end
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-|  | `string / number` | Yes | Profile key |
+|  key | `string / number` | Yes | Profile key |
 
 **Returns:** `table?` — The profile data, or `nil` if not found. Compressed profiles are transparently decompressed before being returned, and any `SerializationManifest`-marked fields are converted back to real Vector3/CFrame/etc. objects.
 
@@ -297,7 +297,7 @@ PlayerStore:PublishGlobalUpdate(tostring(userId), {
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-|  | `string / number` | Yes | Profile key |
+|  key | `string / number` | Yes | Profile key |
 | `payload` | `table` | Yes | Arbitrary data describing the update |
 
 **Returns:** `boolean` — Whether the update was successfully queued
