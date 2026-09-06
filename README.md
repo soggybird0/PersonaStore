@@ -195,7 +195,7 @@ so developers can spend more time building games rather than persistence infrast
 
 ---
 
-**Author:** @Draxxor   
+**Author:** @soggybird0   
 **Version:** 2.0.0   
 **License:** MIT   
 
