@@ -400,17 +400,17 @@ assert(second < first * 0.5)  -- At least 2x faster
 ## Performance Improvements
 
 ### Storage
-- Compressed saves now 40-70% smaller ✅
-- Large profiles benefit most ✅
+- Compressed saves now 40-70% smaller
+- Large profiles benefit most
 
 ### CPU
-- Compression cache prevents recomputation ✅
-- Batch updates use `Destroy()` instead of double-save ✅
+- Compression cache prevents recomputation
+- Batch updates use `Destroy()` instead of double-save
 
 ### Reliability
-- No more crashes from `:len()` on tables ✅
-- Atomic operations now truly atomic ✅
-- Observable proxy preserved across imports ✅
+- No more crashes from `:len()` on tables
+- Atomic operations now truly atomic
+- Observable proxy preserved across imports
 
 ---
 
