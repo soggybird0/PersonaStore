@@ -27,7 +27,7 @@
 
 # Installation
 
-Place `PersonaStore.lua` inside **ServerScriptService** or another server-only location.
+Place `PersonaStore` inside **ServerScriptService** or another server-only location.
 
 ```lua
 local PersonaStore = require(path.To.PersonaStore)
