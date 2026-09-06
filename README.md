@@ -72,7 +72,7 @@ local PlayerStore = PersonaStore:CreateDataStore("PlayerData", {
 Load a session.
 
 ```lua
-local session = PlayerStore:LoadSession(tostring(player.UserId))
+local session = PlayerStore:LoadSession(player.UserId)
 
 if not session then
     player:Kick("Failed to load data.")
