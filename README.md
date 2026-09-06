@@ -110,7 +110,6 @@ PersonaStore is composed of three primary objects.
 
 # Example
 
-> Without Generic Types (No AutoComplete)
 ```lua
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -126,66 +125,6 @@ local Template = {
 local MoneyStore = PersonaStore:CreateDataStore("MoneyStats_v1", {
 	Schema = Template
 })
-
-local sessions = {}
-
-Players.PlayerAdded:Connect(function(player)
-	local session = MoneyStore:LoadSessionAsync(tostring(player.UserId), 10)
-	if not session then
-		player:Kick("Failed to load session your session. Please rejoin.")
-		return
-	end
-	
-    local leaderstats = Instance.new("Folder", player)
-	leaderstats.Name = "leaderstats"
-	
-    local money = Instance.new("IntValue", leaderstats)
-    money.Name = "Money"
-	money.Value = session.Data.Money
-	
-    local kills = Instance.new("IntValue", leaderstats)
-    kills.Name = "Kills"
-	kills.Value = session.Data.Kills
-	
-	sessions[player.UserId] = session
-	
-	session:ListenToFieldChange(function(_, new, root)
-		if root == "Kills" then
-			kills.Value = new
-		end
-		
-		if root == "Money" then
-			money.Value = new
-		end
-	end)
-end)
-
-Players.PlayerRemoving:Connect(function(player)
-	local session = sessions[player.UserId]
-	if session then
-		session:Destroy()
-	end
-	
-	sessions[player.UserId] = nil
-end)
-```
-
-> With Generic Types (AutoComplete For Data)
-```lua
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-
-local PersonaStore = require(ReplicatedStorage.Packages.PersonaStore)
-PersonaStore:Init()
-
-local Template = {
-	Money = 0,
-	Kills = 0,
-}
-
-local MoneyStore: PersonaStore.Founder<typeof(Template)> = PersonaStore:CreateDataStore("MoneyStats_v1", {
-	Schema = Template
-}) -- You now have autocomplete!
 
 local sessions = {}
 
