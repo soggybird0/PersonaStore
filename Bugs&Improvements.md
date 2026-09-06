@@ -287,16 +287,16 @@ This is clearer and more explicit.
 
 | Issue | Severity | Fixed? |
 |-------|----------|--------|
-| SaveCompressed() discards data | **Critical** | ✔ |
-| Compression cache never used | **High** | ✔ |
-| Metadata size calculation crashes | **High** | ✔ |
-| LoadSession can't decompress | **Critical** | ✔ |
-| Hash verification always fails | **Critical** | ✔ |
-| IncrementCounter not atomic | **High** | ✔ |
-| ImportData breaks proxy | **High** | ✔ |
-| Compression not loaded on join | **Critical** | ✔ |
-| LoadReadOnlySession doesn't decompress | **Medium** | ✔ |
-| Unused SavePatch parameter | **Low** | ✔ |
+| SaveCompressed() discards data | **Critical** | Fixed |
+| Compression cache never used | **High** | Fixed |
+| Metadata size calculation crashes | **High** | Fixed |
+| LoadSession can't decompress | **Critical** | Fixed |
+| Hash verification always fails | **Critical** | Fixed |
+| IncrementCounter not atomic | **High** | Fixed |
+| ImportData breaks proxy | **High** | Fixed |
+| Compression not loaded on join | **Critical** | Fixed |
+| LoadReadOnlySession doesn't decompress | **Medium** | Fixed |
+| Unused SavePatch parameter | **Low** | Fixed |
 
 ---
 
