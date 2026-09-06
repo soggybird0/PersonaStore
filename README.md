@@ -129,7 +129,7 @@ local MoneyStore = PersonaStore:CreateDataStore("MoneyStats_v1", {
 local sessions = {}
 
 Players.PlayerAdded:Connect(function(player)
-	local session = MoneyStore:LoadSessionAsync(tostring(player.UserId), 10)
+	local session = MoneyStore:LoadSessionAsync(player.UserId, 10)
 	if not session then
 		player:Kick("Failed to load session your session. Please rejoin.")
 		return
