@@ -107,7 +107,7 @@ local PlayerStore = PersonaStore:CreateDataStore("PlayerData", {
 |-------|------|---------|-------------|
 | `Schema` | `table` | `{}` | Template for new profiles |
 | `AutoSaveInterval` | `number` | `30` | Seconds between autosaves |
-| `SerializationManifest` | `table` | `{}` | `{fieldName = typeName, ...}` applied to every session loaded from this store — see [Serialization Engine](#serialization-engine) |
+| `SerializationManifest` | `table` | `{}` | `{fieldName = typeName, ...}` applied to every session loaded from this store - see [Serialization Engine](#serialization-engine) |
 
 ---
 
@@ -129,13 +129,13 @@ PersonaStore:SetCompressionSettings(Enum.CompressionAlgorithm.Ztsd, 9)
 - **ZSTD, Level 9**: Best for data-heavy profiles (slower but ~20-30% better compression)
 - **ZSTD, Level 22**: Maximum compression for archival/exports
 
-> **Note:** The algorithm used is recorded per-profile in `CompressionMetadata.Algorithm`. Changing this setting mid-project is safe — existing compressed profiles are always decompressed with whatever algorithm they were originally saved with, not whatever the current global default is.
+> **Note:** The algorithm used is recorded per-profile in `CompressionMetadata.Algorithm`. Changing this setting mid-project is safe - existing compressed profiles are always decompressed with whatever algorithm they were originally saved with, not whatever the current global default is.
 
 ---
 
 #### PersonaStore:SetIntegrityMode(mode)
 
-**NEW in v1.2.0** — Controls how much work `SavePatch()` does to keep integrity hashes current. See [Integrity Modes](#integrity-modes) for full details.
+**NEW in v1.2.0** - Controls how much work `SavePatch()` does to keep integrity hashes current. See [Integrity Modes](#integrity-modes) for full details.
 
 ```lua
 PersonaStore:SetIntegrityMode("PerField")
@@ -151,7 +151,7 @@ Invalid modes are ignored (with a `warn()`), leaving the current mode unchanged.
 
 #### PersonaStore:CreateOrderedDataStore(storeName)
 
-**NEW in v1.2.0** — Creates or returns an existing `OrderedFounder`, a thin wrapper over `DataStoreService:GetOrderedDataStore()`. See [OrderedDataStore Support](#ordereddatastore-support).
+**NEW in v1.2.0** - Creates or returns an existing `OrderedFounder`, a thin wrapper over `DataStoreService:GetOrderedDataStore()`. See [OrderedDataStore Support](#ordereddatastore-support).
 
 ```lua
 local Leaderboard = PersonaStore:CreateOrderedDataStore("WeeklyLeaderboard_v1")
@@ -161,7 +161,7 @@ local Leaderboard = PersonaStore:CreateOrderedDataStore("WeeklyLeaderboard_v1")
 
 #### PersonaStore:CreateMemoryQueue(name) / PersonaStore:CreateMemorySortedMap(name)
 
-**NEW in v1.2.0** — Creates or returns cached wrappers over `MemoryStoreService` queues and sorted maps. See [MemoryStoreService Support](#memorystoreservice-support).
+**NEW in v1.2.0** - Creates or returns cached wrappers over `MemoryStoreService` queues and sorted maps. See [MemoryStoreService Support](#memorystoreservice-support).
 
 ```lua
 local PurchaseQueue = PersonaStore:CreateMemoryQueue("PendingPurchases")
@@ -172,7 +172,7 @@ local ActiveMatches = PersonaStore:CreateMemorySortedMap("ActiveMatches")
 
 #### PersonaStore:RegisterSerializer(typeName, serializer)
 
-**NEW in v1.3.0** — Registers a custom (de)serializer for a type name, making it usable in a `Founder`'s `SerializationManifest`, a session's `SetSerialize()` / `MarkFieldSerialized()`, or passed explicitly to `DataSession:Serialize(value, typeName)`. See [Serialization Engine](#serialization-engine).
+**NEW in v1.3.0** - Registers a custom (de)serializer for a type name, making it usable in a `Founder`'s `SerializationManifest`, a session's `SetSerialize()` / `MarkFieldSerialized()`, or passed explicitly to `DataSession:Serialize(value, typeName)`. See [Serialization Engine](#serialization-engine).
 
 ```lua
 PersonaStore:RegisterSerializer("Currency", {
@@ -186,7 +186,7 @@ PersonaStore:RegisterSerializer("Currency", {
 | `typeName` | `string` | Name used to reference this type elsewhere (e.g. in a manifest) |
 | `serializer` | `table` | `{Serialize = function(value) -> storageSafeData, Deserialize = function(data) -> value}` |
 
-**Returns:** `boolean` — `false` (with a `warn()`) if `serializer` doesn't have both functions
+**Returns:** `boolean` - `false` (with a `warn()`) if `serializer` doesn't have both functions
 
 `Vector3`, `Vector2`, `CFrame`, `Color3`, `UDim`, and `UDim2` are already registered out of the box; you only need this for your own custom types.
 
@@ -237,7 +237,7 @@ end
 |-----------|------|----------|-------------|
 |  key | `string / number` | Yes | Profile key (usually player UserID) |
 
-**Returns:** `DataSession?` — `nil` if ownership could not be acquired
+**Returns:** `DataSession?` - `nil` if ownership could not be acquired
 
 ---
 
@@ -274,7 +274,7 @@ end
 |-----------|------|----------|-------------|
 |  key | `string / number` | Yes | Profile key |
 
-**Returns:** `table?` — The profile data, or `nil` if not found. Compressed profiles are transparently decompressed before being returned, and any `SerializationManifest`-marked fields are converted back to real Vector3/CFrame/etc. objects.
+**Returns:** `table?` - The profile data, or `nil` if not found. Compressed profiles are transparently decompressed before being returned, and any `SerializationManifest`-marked fields are converted back to real Vector3/CFrame/etc. objects.
 
 **Use cases:**
 - Leaderboard queries without locking the player
@@ -300,7 +300,7 @@ PlayerStore:PublishGlobalUpdate(tostring(userId), {
 |  key | `string / number` | Yes | Profile key |
 | `payload` | `table` | Yes | Arbitrary data describing the update |
 
-**Returns:** `boolean` — Whether the update was successfully queued
+**Returns:** `boolean` - Whether the update was successfully queued
 
 **Best for:**
 - Granting items to offline players
@@ -331,7 +331,7 @@ end
 | `keys` | `{string}` | Yes | Array of profile keys |
 | `transformFn` | `(data: table) -> ()` | Yes | Function to transform each profile |
 
-**Returns:** `{[string]: boolean}` — Success status per key
+**Returns:** `{[string]: boolean}` - Success status per key
 
 **Important:** `BatchUpdate` will wait up to 5 seconds per key. Avoid with very large arrays. Each key is written to the DataStore exactly once (a full `Save()` via `Destroy()`), regardless of the outcome of `transformFn`.
 
@@ -350,7 +350,7 @@ if meta then
 end
 ```
 
-**Returns:** `table?` — Metadata, or `nil` if not found
+**Returns:** `table?` - Metadata, or `nil` if not found
 
 **Returned Table:**
 
@@ -390,19 +390,19 @@ print("Active sessions:", count)
 
 #### Founder:ListVersionsAsync(key, sortDirection, minDate, maxDate, pageSize)
 
-**NEW in v1.2.0** — See [DataStore Version APIs](#datastore-version-apis).
+**NEW in v1.2.0** - See [DataStore Version APIs](#datastore-version-apis).
 
 ---
 
 #### Founder:GetVersionAsync(key, version)
 
-**NEW in v1.2.0** — See [DataStore Version APIs](#datastore-version-apis). As of v1.3.0, returned `Data` also has any `SerializationManifest`-marked fields converted back to real Vector3/CFrame/etc. objects, the same as `LoadSession()` / `LoadReadOnlySnapshot()`.
+**NEW in v1.2.0** - See [DataStore Version APIs](#datastore-version-apis). As of v1.3.0, returned `Data` also has any `SerializationManifest`-marked fields converted back to real Vector3/CFrame/etc. objects, the same as `LoadSession()` / `LoadReadOnlySnapshot()`.
 
 ---
 
 #### Founder:RemoveVersionAsync(key, version)
 
-**NEW in v1.2.0** — See [DataStore Version APIs](#datastore-version-apis).
+**NEW in v1.2.0** - See [DataStore Version APIs](#datastore-version-apis).
 
 ---
 
@@ -432,12 +432,12 @@ Writes the entire profile back to the DataStore.
 local success = session:Save()
 ```
 
-**Returns:** `boolean` — Whether the save succeeded
+**Returns:** `boolean` - Whether the save succeeded
 
 **Notes:**
 - Costs more bandwidth than `SavePatch()`
 - Confirms lock token before writing
-- Recomputes both the whole-profile `DataHash` and the per-field `FieldHashes` table, regardless of the current `IntegrityMode` — a full save always re-establishes a clean baseline
+- Recomputes both the whole-profile `DataHash` and the per-field `FieldHashes` table, regardless of the current `IntegrityMode` - a full save always re-establishes a clean baseline
 - Any fields marked in the session's `SerializationManifest` are converted to storage-safe form before being written and hashed
 - Use for important checkpoints
 
@@ -451,13 +451,13 @@ Writes only the top-level fields that changed since the last save.
 session:SavePatch()
 ```
 
-**Returns:** `boolean` — Whether the save succeeded (returns `true` if nothing changed)
+**Returns:** `boolean` - Whether the save succeeded (returns `true` if nothing changed)
 
 **Notes:**
 - This is what the autosave heartbeat calls
 - Dramatically reduces bandwidth on large profiles
 - Prefer over `Save()` for routine autosaving
-- The cost of the integrity hash pass depends on `PersonaStore.IntegrityMode` — see [Integrity Modes](#integrity-modes)
+- The cost of the integrity hash pass depends on `PersonaStore.IntegrityMode` - see [Integrity Modes](#integrity-modes)
 - Manifest-marked fields among the dirty fields are serialized before being written and hashed, same as `Save()`
 
 ---
@@ -470,7 +470,7 @@ Saves the entire profile with EncodingService compression.
 local success = session:SaveCompressed()
 ```
 
-**Returns:** `boolean` — Whether the save succeeded
+**Returns:** `boolean` - Whether the save succeeded
 
 **Best for:**
 - Large profiles with deep inventories
@@ -522,7 +522,7 @@ Restores `Data` to the pre-transaction state.
 local success = session:RollbackTransaction()
 ```
 
-**Returns:** `boolean` — `false` if no transaction was active
+**Returns:** `boolean` - `false` if no transaction was active
 
 ---
 
@@ -540,7 +540,7 @@ session:IncrementCounter("Level")       -- Level += 1
 | `fieldName` | `string` | Yes | Field to increment |
 | `amount` | `number` | No | Increment amount (default: 1) |
 
-**Returns:** `boolean` — Whether the save succeeded
+**Returns:** `boolean` - Whether the save succeeded
 
 **Best for:**
 - Leaderboard score increments
@@ -562,7 +562,7 @@ local json = session:ExportData(true)
 |-----------|------|----------|-------------|
 | `includeMetadata` | `boolean` | No | Include session metadata in export |
 
-**Returns:** `string` — JSON-encoded export
+**Returns:** `string` - JSON-encoded export
 
 **Exported structure:**
 
@@ -594,7 +594,7 @@ local success = session:ImportData(jsonString, true)   -- Overwrite mode
 | `jsonString` | `string` | Yes | JSON export string |
 | `overwrite` | `boolean` | No | `true` = replace all data, `false` = merge (default) |
 
-**Returns:** `boolean` — Whether import succeeded
+**Returns:** `boolean` - Whether import succeeded
 
 ---
 
@@ -609,13 +609,13 @@ if not session:VerifyDataIntegrity() then
 end
 ```
 
-**Returns:** `boolean` — Whether the stored hash(es) match the current in-memory data
+**Returns:** `boolean` - Whether the stored hash(es) match the current in-memory data
 
 **Requires:** `PersonaStore.EnableDataIntegrityChecks = true` (enabled by default)
 
 **Behavior depends on `IntegrityMode`:**
-- `"Full"` / `"HashOnlyOnFullSave"` — compares against the whole-profile `DataHash`.
-- `"PerField"` — compares each field in memory against its corresponding entry in `FieldHashes`.
+- `"Full"` / `"HashOnlyOnFullSave"` - compares against the whole-profile `DataHash`.
+- `"PerField"` - compares each field in memory against its corresponding entry in `FieldHashes`.
 
 ---
 
@@ -629,7 +629,7 @@ if session:IsCacheStale() then
 end
 ```
 
-**Returns:** `boolean` — `true` if cloud version is newer
+**Returns:** `boolean` - `true` if cloud version is newer
 
 ---
 
@@ -707,7 +707,7 @@ for _, update in session:ConsumeGlobalUpdates() do
 end
 ```
 
-**Returns:** `{table}` — Array of update payloads
+**Returns:** `{table}` - Array of update payloads
 
 ---
 
@@ -736,7 +736,7 @@ print("Compression stats:", meta.CompressionStats)
 
 #### DataSession:SetSerialize(manifest)
 
-**NEW in v1.3.0** — Replaces this session's serialization manifest wholesale. See [Serialization Engine](#serialization-engine).
+**NEW in v1.3.0** - Replaces this session's serialization manifest wholesale. See [Serialization Engine](#serialization-engine).
 
 ```lua
 session:SetSerialize({
@@ -749,7 +749,7 @@ session:SetSerialize({
 |-----------|------|----------|-------------|
 | `manifest` | `table` | Yes | `{fieldName = typeName, ...}` |
 
-**Returns:** `boolean` — `false` (with a `warn()`) if `manifest` isn't a table
+**Returns:** `boolean` - `false` (with a `warn()`) if `manifest` isn't a table
 
 **Note:** This *replaces* the whole manifest, including whatever the session inherited from the store's `SerializationManifest` config. Use `MarkFieldSerialized()` instead if you just want to add one field.
 
@@ -757,7 +757,7 @@ session:SetSerialize({
 
 #### DataSession:MarkFieldSerialized(fieldName, typeName)
 
-**NEW in v1.3.0** — Adds or overrides a single field in this session's serialization manifest without touching the rest.
+**NEW in v1.3.0** - Adds or overrides a single field in this session's serialization manifest without touching the rest.
 
 ```lua
 session:MarkFieldSerialized("LastPosition", "Vector3")
@@ -768,13 +768,13 @@ session:MarkFieldSerialized("LastPosition", "Vector3")
 | `fieldName` | `string` | Yes | Top-level field name in `Data` |
 | `typeName` | `string` | Yes | Registered type name (e.g. `"Vector3"`, or a custom type from `RegisterSerializer`) |
 
-**Returns:** `boolean` — `false` if either argument is missing
+**Returns:** `boolean` - `false` if either argument is missing
 
 ---
 
 #### DataSession:Serialize(value, typeName?) / DataSession:Deserialize(value)
 
-**NEW in v1.3.0** — Manual (de)serialization helpers, independent of the manifest. Useful for one-off conversions, e.g. before sending data over `PublishGlobalUpdate()`.
+**NEW in v1.3.0** - Manual (de)serialization helpers, independent of the manifest. Useful for one-off conversions, e.g. before sending data over `PublishGlobalUpdate()`.
 
 ```lua
 local safePosition = session:Serialize(player.Character.HumanoidRootPart.Position, "Vector3")
@@ -879,9 +879,9 @@ local base64 = CompressionHandler.encodeToBase64(compressed)
 PersonaStore:SetIntegrityMode("PerField")
 ```
 
-`DataSession:VerifyDataIntegrity()` automatically checks the right structure (`DataHash` or `FieldHashes`) for whichever mode is active. `Save()` (the full save) always refreshes both `DataHash` and `FieldHashes` regardless of mode, so switching modes mid-project — or falling back from `"PerField"` to `"Full"` — is safe as long as a full `Save()` has run at least once since the switch.
+`DataSession:VerifyDataIntegrity()` automatically checks the right structure (`DataHash` or `FieldHashes`) for whichever mode is active. `Save()` (the full save) always refreshes both `DataHash` and `FieldHashes` regardless of mode, so switching modes mid-project - or falling back from `"PerField"` to `"Full"` - is safe as long as a full `Save()` has run at least once since the switch.
 
-**Important caveat:** in `"PerField"` and `"HashOnlyOnFullSave"` modes, the whole-profile `DataHash` returned by `Founder:GetKeyMetadata()` can go stale between full saves. Don't treat it as a live whole-profile checksum in those modes — use `VerifyDataIntegrity()`, which knows which structure to trust.
+**Important caveat:** in `"PerField"` and `"HashOnlyOnFullSave"` modes, the whole-profile `DataHash` returned by `Founder:GetKeyMetadata()` can go stale between full saves. Don't treat it as a live whole-profile checksum in those modes - use `VerifyDataIntegrity()`, which knows which structure to trust.
 
 ---
 
@@ -910,7 +910,7 @@ end
 - Instant reads
 - Perfect for queries and reporting
 
-For true leaderboards with efficient range queries (top N, rank lookups), consider [OrderedDataStore Support](#ordereddatastore-support) instead — it's purpose-built for sorted numeric reads and doesn't require loading/decompressing full profile documents.
+For true leaderboards with efficient range queries (top N, rank lookups), consider [OrderedDataStore Support](#ordereddatastore-support) instead - it's purpose-built for sorted numeric reads and doesn't require loading/decompressing full profile documents.
 
 ---
 
@@ -936,7 +936,7 @@ Each profile is locked individually, modified, and saved exactly once (a full `S
 
 ## OrderedDataStore Support
 
-**NEW in v1.2.0.** `OrderedFounder` wraps `DataStoreService:GetOrderedDataStore()` for cases where you just need a sorted, numeric leaderboard — no session locks, schemas, or compression, since OrderedDataStores only ever store non-negative integers.
+**NEW in v1.2.0.** `OrderedFounder` wraps `DataStoreService:GetOrderedDataStore()` for cases where you just need a sorted, numeric leaderboard - no session locks, schemas, or compression, since OrderedDataStores only ever store non-negative integers.
 
 ```lua
 local Leaderboard = PersonaStore:CreateOrderedDataStore("WeeklyLeaderboard_v1")
@@ -971,13 +971,13 @@ end
 | `Get(key)` | Reads the current value, or `nil` |
 | `Increment(key, delta?)` | Atomically adds `delta` (default `1`), returns the new value |
 | `Remove(key)` | Deletes the key |
-| `GetSortedPage(ascending?, pageSize?, minValue?, maxValue?)` | Returns `(currentPage, pages)` — a plain array of `{key, value}` entries plus the native `DataStorePages` object for further pagination |
+| `GetSortedPage(ascending?, pageSize?, minValue?, maxValue?)` | Returns `(currentPage, pages)` - a plain array of `{key, value}` entries plus the native `DataStorePages` object for further pagination |
 
 ---
 
 ## MemoryStoreService Support
 
-**NEW in v1.2.0.** For short-lived, high-throughput, ephemeral data that doesn't need DataStore durability — matchmaking queues, purchase-processing jobs, active-match tracking — PersonaStore wraps `MemoryStoreService` queues and sorted maps with the same retry/backoff behavior as everything else.
+**NEW in v1.2.0.** For short-lived, high-throughput, ephemeral data that doesn't need DataStore durability - matchmaking queues, purchase-processing jobs, active-match tracking - PersonaStore wraps `MemoryStoreService` queues and sorted maps with the same retry/backoff behavior as everything else.
 
 ### MemoryQueueWrapper
 
@@ -1078,7 +1078,7 @@ PlayerStore:RemoveVersionAsync(tostring(userId), someVersionId)
 
 `Vector3`, `Vector2`, `CFrame`, `Color3`, `UDim`, and `UDim2` are registered out of the box.
 
-### Marking fields — store-wide
+### Marking fields - store-wide
 
 Set `SerializationManifest` when creating a store so every session loaded from it gets the same conversions automatically:
 
@@ -1104,7 +1104,7 @@ session.Data.LastPosition = player.Character.HumanoidRootPart.Position
 session:SavePatch()
 ```
 
-### Marking fields — per session
+### Marking fields - per session
 
 If only some sessions from a store need a conversion, or you'd rather not touch the store config, use the session-level methods instead:
 
@@ -1141,7 +1141,7 @@ local PlayerStore = PersonaStore:CreateDataStore("PlayerData_v2", {
 
 ### Manual (de)serialization
 
-For one-off conversions outside of a manifest — for example, before sending a `Vector3` through `PublishGlobalUpdate()`, which only accepts JSON-safe data:
+For one-off conversions outside of a manifest - for example, before sending a `Vector3` through `PublishGlobalUpdate()`, which only accepts JSON-safe data:
 
 ```lua
 local safePosition = session:Serialize(player.Character.HumanoidRootPart.Position, "Vector3")
@@ -1167,13 +1167,13 @@ end)
 | Real object → storage-safe | Immediately before `Save()`, `SavePatch()`, and `SaveCompressed()` write/hash their data; and inside `ExportData()` |
 | Storage-safe → real object | Immediately after `LoadSession()`, `LoadReadOnlySnapshot()`/`LoadReadOnlySession()`, and `GetVersionAsync()` read their data; and inside `ImportData()` |
 
-Because conversion happens right at the read/write boundary, `session.Data` always holds real Vector3/CFrame/etc. objects while you're working with it — you never see the `{__serialized = true, ...}` wrapper form unless you call `Serialize()`/`Deserialize()` manually.
+Because conversion happens right at the read/write boundary, `session.Data` always holds real Vector3/CFrame/etc. objects while you're working with it - you never see the `{__serialized = true, ...}` wrapper form unless you call `Serialize()`/`Deserialize()` manually.
 
 ---
 
 ## BufferArray Utility
 
-**NEW in v1.3.0.** A thin, typed wrapper over Luau's `buffer` primitive, useful for storing compact numeric data — leaderboard snapshots, grids, particle-ish data — far more cheaply than an equivalent Lua table, then persisting it as a single base64 string field.
+**NEW in v1.3.0.** A thin, typed wrapper over Luau's `buffer` primitive, useful for storing compact numeric data - leaderboard snapshots, grids, particle-ish data - far more cheaply than an equivalent Lua table, then persisting it as a single base64 string field.
 
 ### Creating an array
 
@@ -1210,7 +1210,7 @@ scores:Fill(0)  -- zero out every element
 
 ### Persisting to a DataStore field
 
-`BufferArray` doesn't save itself — encode it to a string and store that string in your profile's `Data` like any other field:
+`BufferArray` doesn't save itself - encode it to a string and store that string in your profile's `Data` like any other field:
 
 ```lua
 -- Save
@@ -1330,7 +1330,7 @@ session:StartAutoSave(15)
 7. **Clean up sessions:** Always call `Destroy()` on player leave
 8. **Monitor statistics:** Track engine health with `GetStatistics()`
 9. **Configure compression:** Tune compression algorithm and level per your data size
-10. **Reach for MemoryStore for ephemeral data:** Don't put short-lived queue/job data in a DataStore-backed profile — use `CreateMemoryQueue`/`CreateMemorySortedMap` instead
+10. **Reach for MemoryStore for ephemeral data:** Don't put short-lived queue/job data in a DataStore-backed profile - use `CreateMemoryQueue`/`CreateMemorySortedMap` instead
 11. **Register custom serializers once, up front:** Call `PersonaStore:RegisterSerializer()` at startup, before any `CreateDataStore()`/`LoadSession()` calls that reference the type in a manifest
 
 ---
