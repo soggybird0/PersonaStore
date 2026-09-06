@@ -199,4 +199,4 @@ so developers can spend more time building games rather than persistence infrast
 **Version:** 2.0.0   
 **License:** MIT   
 
-Made for developers by a developer. ❤
+Made for developers by a developer.
